@@ -1,7 +1,7 @@
 {
   "name": "template-toc",
   "description": "Middleware for generating a markdown Table of Contents with Template or applications based on Template.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/jonschlinkert/template-toc",
   "author": {
     "name": "Jon Schlinkert",

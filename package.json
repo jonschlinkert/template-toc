@@ -1,0 +1,41 @@
+{
+  "name": "template-toc",
+  "description": "Middleware for generating a markdown Table of Contents with Template or applications based on Template.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/template-toc",
+  "author": {
+    "name": "Jon Schlinkert",
+    "url": "https://github.com/jonschlinkert"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jonschlinkert/template-toc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/template-toc/issues"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/jonschlinkert/template-toc/blob/master/LICENSE"
+  },
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "extend-shallow": "^1.1.2",
+    "markdown-toc": "^0.8.1"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "template": "^0.11.1"
+  },
+  "keywords": []
+}

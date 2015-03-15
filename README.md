@@ -29,7 +29,7 @@ Add the following to any markdown file that should get a Table of Contents:
 <!-- toc -->
 ```
 
-### Usage with Template
+### Usage with [Template]
 
 ```js
 var Template = require('template');
@@ -66,7 +66,7 @@ template.render('README.md', function(err, content) {
 ```
 
 
-### Usage with Verb
+### Usage with [Verb]
 
 ```js
 var verb = require('verb');
@@ -75,7 +75,7 @@ verb.preRender(/\.md$/, toc(verb));
 verb.postRender(/\.md$/, toc(verb));
 ```
 
-### Usage with Assemble
+### Usage with [Assemble]
 
 ```js
 var assemble = require('assemble');

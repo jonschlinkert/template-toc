@@ -1,7 +1,7 @@
 {
   "name": "template-toc",
   "description": "Middleware for generating a markdown Table of Contents with Template or applications based on Template.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "homepage": "https://github.com/jonschlinkert/template-toc",
   "author": {
     "name": "Jon Schlinkert",
@@ -28,14 +28,26 @@
   "scripts": {
     "test": "mocha"
   },
-  "dependencies": {
-    "extend-shallow": "^1.1.2",
-    "markdown-toc": "^0.8.1"
-  },
   "devDependencies": {
     "mocha": "*",
     "should": "*",
     "template": "^0.11.1"
   },
-  "keywords": []
+  "dependencies": {
+    "extend-shallow": "^1.1.2",
+    "markdown-toc": "^0.9.0"
+  },
+  "keywords": [
+    "contents",
+    "docs",
+    "documentation",
+    "generate",
+    "insert",
+    "markdown",
+    "md",
+    "readme",
+    "table",
+    "template",
+    "toc"
+  ]
 }

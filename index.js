@@ -19,12 +19,18 @@ module.exports = function (app) {
     // ignore toc comments for an entire template
     if (file.data.toc === false) return next();
     file.content = toc.insert(file.content, {filter: fn});
-
-    // selectively ignore TOC comments that are escaped
-    file.content = file.content.split('<!!-- toc').join('<!-- toc');
+    file.content = unescape(file.content);
     next();
   };
 };
+
+/**
+ * Unescape escaped toc comments
+ */
+
+function unescape(str) {
+  return str.split('<!!-- toc').join('<!-- toc');
+}
 
 /**
  * Default filter function for ignoring specified headings

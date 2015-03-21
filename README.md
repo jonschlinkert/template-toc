@@ -119,7 +119,6 @@ If, for some reason, you need to use the `<!- toc -->` comment in documentation 
 <!-- toc -->
 ```
 
-
 ## Related projects
 * [remarkable](https://github.com/jonschlinkert/remarkable): Markdown parser, done right. 100% Commonmark support, extensions, syntax plugins, high speed - all in one.
 * [markdown-toc](https://github.com/jonschlinkert/markdown-toc): Generate a markdown TOC (table of contents) with Remarkable.

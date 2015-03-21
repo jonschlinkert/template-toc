@@ -43,6 +43,41 @@ describe('toc', function () {
     ].join('\n'));
   })
 
+  it.skip('should work as an onLoad middleware:', function (done) {
+    template.onLoad(/\.md$/, toc(template));
+
+    // render `./fixtures/basic.md`
+    template.render('fixture.md', function (err, content) {
+      if (err) console.log(err);
+
+      content.should.equal([
+        '# Basic markdown',
+        '',
+        '> This is a block quote',
+        '',
+        '<!-- toc -->',
+        '',
+        '- [AAA](#aaa)',
+        '',
+        '<!-- tocstop -->',
+        '',
+        '## AAA',
+        '',
+        'This is aaa.',
+        '',
+        '### BBB',
+        'This is bbb.',
+        '',
+        '#### CCC',
+        'This is ccc.',
+        '',
+        '##### DDD',
+        'This is ddd.'
+      ].join('\n'));
+      done();
+    });
+  });
+
   it('should work as a preRender middleware:', function (done) {
     template.preRender(/\.md$/, toc(template));
 

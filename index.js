@@ -16,16 +16,27 @@ module.exports = function (app) {
   return function (file, next) {
     var fn = filter(app.option('toc.ignore'));
 
-    // ignore toc comments for an entire template
+    // ignore toc comments for an entire template?
     if (file.data.toc === false) return next();
-    file.content = toc.insert(file.content, {filter: fn});
+
+    // generate the actual toc and set it on `file.toc`
+    file.toc = toc(file.content).content;
+
+    file.content = toc.insert(file.content, {
+      // pass the generated toc to use on the options
+      toc: file.toc,
+      // custom filter function for headings
+      filter: fn
+    });
+
+    // unescape escaped `<!!-- toc` comments
     file.content = unescape(file.content);
     next();
   };
 };
 
 /**
- * Unescape escaped toc comments
+ * Unescape escaped toc comments (`<!!-- toc`)
  */
 
 function unescape(str) {
@@ -43,6 +54,10 @@ function unescape(str) {
  */
 
 function filter(patterns) {
+  if (typeof patterns === 'function') {
+    return patterns;
+  }
+
   return function (str) {
     var arr = ['\\[\\!\\[', '{%', '<%'].concat(patterns || []);
     var re = new RegExp(arr.join('|'));

@@ -11,14 +11,14 @@ var extend = require('extend-shallow');
 var toc = require('markdown-toc');
 
 module.exports = function (app) {
-  var defaults = app.option('toc');
 
   return function (file, next) {
     if (file.content.indexOf('<!-- toc') === -1) {
       return next();
     }
 
-    var fn = filter(app.option('toc.ignore'));
+    var opts = app.option('toc') || {};
+    var fn = filter(opts.ignore);
 
     // ignore toc comments for an entire template?
     if (file.data.toc === false) return next();
@@ -26,10 +26,11 @@ module.exports = function (app) {
     // generate the actual toc and set it on `file.toc`
     file.toc = toc(file.content).content;
     file.content = toc.insert(file.content, {
-      // pass the generated toc to use on the options
+      // pass the generated toc to use on the opts
       toc: file.toc,
       // custom filter function for headings
-      filter: fn
+      filter: fn,
+      append: opts.append
     });
 
     // unescape escaped `<!!-- toc` comments

@@ -14,6 +14,8 @@ module.exports = function (app) {
 
   return function (file, next) {
     if (file.content.indexOf('<!-- toc') === -1) {
+      // unescape escaped `<!!-- toc` comments
+      file.content = unescape(file.content);
       return next();
     }
 

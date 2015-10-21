@@ -16,6 +16,7 @@ var template;
 describe('toc', function () {
   beforeEach(function () {
     template = new Template();
+    template.engine('md', require('engine-base'));
     template.page('fixtures/basic.md');
     template.partial('fixtures/doc.md');
   });
@@ -29,7 +30,7 @@ describe('toc', function () {
 
     // render `./fixtures/basic.md`
     template.render('basic.md', function (err, content) {
-      if (err) console.log(err);
+      if (err) return done(err);
       content.should.equal([
         '# Basic markdown',
         '',
@@ -65,7 +66,7 @@ describe('toc', function () {
 
     // render `./fixtures/basic.md`
     template.render('basic.md', function (err, content) {
-      if (err) console.log(err);
+      if (err) return done(err);
 
       content.should.equal([
         '# Basic markdown',
@@ -100,7 +101,7 @@ describe('toc', function () {
 
     // render `./fixtures/basic.md`
     template.render('basic.md', function (err, content) {
-      if (err) console.log(err);
+      if (err) return done(err);
       content.should.equal([
         '# Basic markdown',
         '',
@@ -146,7 +147,7 @@ describe('toc', function () {
 
     // render `./fixtures/basic.md`
     template.render('basic.md', function (err, content) {
-      if (err) console.log(err);
+      if (err) return done(err);
       content.should.equal([
         '# Basic markdown',
         '',
@@ -178,5 +179,4 @@ describe('toc', function () {
       done();
     });
   });
-
 });

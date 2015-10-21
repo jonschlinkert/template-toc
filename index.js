@@ -11,32 +11,36 @@ var extend = require('extend-shallow');
 var toc = require('markdown-toc');
 
 module.exports = function (app) {
-
-  return function (file, next) {
-    if (file.content.indexOf('<!-- toc') === -1) {
+  return function (view, next) {
+    if (view.content.indexOf('<!-- toc') === -1) {
       // unescape escaped `<!!-- toc` comments
-      file.content = unescape(file.content);
+      view.content = unescape(view.content);
       return next();
     }
 
     var opts = app.option('toc') || {};
     var fn = filter(opts.ignore);
 
-    // ignore toc comments for an entire template?
-    if (file.data.toc === false) return next();
+    // ignore toc comments for an entire template
+    if (view.options.toc === false) {
+      return next();
+    }
 
-    // generate the actual toc and set it on `file.toc`
-    file.toc = toc(file.content).content;
-    file.content = toc.insert(file.content, {
+    // generate the actual toc and set it on `view.toc`
+    if (typeof view.data.toc !== 'function') {
+      view.data.toc = toc(view.content).content;
+    }
+
+    view.content = toc.insert(view.content, {
       // pass the generated toc to use on the opts
-      toc: file.toc,
+      toc: view.toc,
       // custom filter function for headings
       filter: fn,
       append: opts.append
     });
 
     // unescape escaped `<!!-- toc` comments
-    file.content = unescape(file.content);
+    view.content = unescape(view.content);
     next();
   };
 };
@@ -63,7 +67,6 @@ function filter(patterns) {
   if (typeof patterns === 'function') {
     return patterns;
   }
-
   return function (str) {
     var arr = ['\\[\\!\\[', '{%', '<%'].concat(patterns || []);
     var re = new RegExp(arr.join('|'));

@@ -18,17 +18,22 @@ module.exports = function (app) {
       return next();
     }
 
-    var opts = app.option('toc') || {};
-    var fn = filter(opts.ignore);
-
-    // ignore toc comments for an entire template
-    if (view.options.toc === false) {
+    var opts = extend({}, app.option('toc'), view.options);
+    // ignore toc comments for an entire template?
+    if (opts.toc === false) {
       return next();
     }
 
+    var fn = filter(opts.ignore);
+    opts.filter = fn;
+
     // generate the actual toc and set it on `view.toc`
     if (typeof view.data.toc !== 'function') {
-      view.data.toc = toc(view.content).content;
+      view.data.toc = toc(view.content, opts).content;
+    }
+
+    if (opts.noinsert) {
+      return next();
     }
 
     view.content = toc.insert(view.content, {
@@ -67,9 +72,10 @@ function filter(patterns) {
   if (typeof patterns === 'function') {
     return patterns;
   }
+
   return function (str) {
     var arr = ['\\[\\!\\[', '{%', '<%'].concat(patterns || []);
     var re = new RegExp(arr.join('|'));
     return !re.test(str);
-  }
+  };
 }

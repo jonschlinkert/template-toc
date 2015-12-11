@@ -24,10 +24,11 @@
     "markdown-toc": "^0.11.7"
   },
   "devDependencies": {
+    "assemble-loader": "^0.2.4",
     "engine-base": "^0.1.2",
     "mocha": "*",
     "should": "*",
-    "template": "^0.15.0"
+    "templates": "^0.6.3"
   },
   "keywords": [
     "contents",
@@ -41,5 +42,16 @@
     "table",
     "template",
     "toc"
-  ]
+  ],
+  "verb": {
+    "related": {
+      "list": [
+        "remarkable",
+        "markdown-toc",
+        "markdown-utils",
+        "verb",
+        "template"
+      ]
+    }
+  }
 }

@@ -10,17 +10,29 @@
 var extend = require('extend-shallow');
 var toc = require('markdown-toc');
 
-module.exports = function (app) {
-  return function (view, next) {
-    if (view.content.indexOf('<!-- toc') === -1) {
+module.exports = function(app, options) {
+  return function(view, next) {
+    if (!/({%=|<\!--) toc/.test(view.content)) {
       // unescape escaped `<!!-- toc` comments
       view.content = unescape(view.content);
+      view.data.toc = '';
       return next();
     }
 
-    var opts = extend({}, app.option('toc'), view.options);
+    var opts = extend({}, app.options, view.options);
+    if (typeof opts.toc === 'undefined') {
+      opts.toc = {};
+    }
+
+    if (typeof opts.toc === 'boolean') {
+      opts.render = opts.toc;
+      opts.toc = {render: opts.render};
+    }
+
+    opts = extend({}, options, opts.toc);
+
     // ignore toc comments for an entire template?
-    if (opts.toc === false) {
+    if (opts.render === false) {
       return next();
     }
 
@@ -30,15 +42,27 @@ module.exports = function (app) {
     // generate the actual toc and set it on `view.toc`
     if (typeof view.data.toc !== 'function') {
       view.data.toc = toc(view.content, opts).content;
+      var lines = view.data.toc.split('\n');
+      var len = lines.length;
+      var res = [];
+      while (len--) {
+        var line = lines[len];
+        if (res.indexOf(line) < 0) {
+          res.unshift(line);
+        }
+      }
+      view.data.toc = res.join('\n');
+      view.data.hasToc = true;
     }
 
-    if (opts.noinsert) {
+    if (opts.noinsert || !opts.insert) {
       return next();
     }
 
+
     view.content = toc.insert(view.content, {
       // pass the generated toc to use on the opts
-      toc: view.toc,
+      toc: view.data.toc,
       // custom filter function for headings
       filter: fn,
       append: opts.append
@@ -73,7 +97,7 @@ function filter(patterns) {
     return patterns;
   }
 
-  return function (str) {
+  return function(str) {
     var arr = ['\\[\\!\\[', '{%', '<%'].concat(patterns || []);
     var re = new RegExp(arr.join('|'));
     return !re.test(str);

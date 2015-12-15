@@ -7,13 +7,14 @@
 
 'use strict';
 
+var isPrimitive = require('is-primitive');
 var extend = require('extend-shallow');
 var toc = require('markdown-toc');
 
 module.exports = function(app, options) {
   return function(view, next) {
+    // unescape escaped `<!!-- toc` comments
     if (!/({%=|<\!--) toc/.test(view.content)) {
-      // unescape escaped `<!!-- toc` comments
       view.content = unescape(view.content);
       view.data.toc = '';
       return next();
@@ -24,12 +25,14 @@ module.exports = function(app, options) {
       opts.toc = {};
     }
 
-    if (typeof opts.toc === 'boolean') {
+    if (isPrimitive(opts.toc)) {
       opts.render = opts.toc;
-      opts.toc = {render: opts.render};
+      opts.toc = { render: opts.render };
     }
 
     opts = extend({}, options, opts.toc);
+    opts.toc = opts.toc || {};
+    view.options.toc = opts.toc;
 
     // ignore toc comments for an entire template?
     if (opts.render === false) {
@@ -55,11 +58,11 @@ module.exports = function(app, options) {
       view.data.hasToc = true;
     }
 
-    if (opts.noinsert || !opts.insert) {
+    if (opts.noinsert || !opts.insert || opts.inserted) {
       return next();
     }
 
-
+    view.options.toc.inserted = true;
     view.content = toc.insert(view.content, {
       // pass the generated toc to use on the opts
       toc: view.data.toc,

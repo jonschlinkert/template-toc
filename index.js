@@ -70,13 +70,12 @@ module.exports = function(app, options) {
       return;
     }
 
-    if ((opts.noinsert && !opts.insert) || opts.inserted) {
+    if (opts.noinsert || !opts.insert || opts.inserted) {
       view.content = placeholder(view.content);
       view.insertToc = function(str, toc) {
         view.options.toc.inserted = true;
         return insert(str, toc);
       };
-
       next();
       return;
     }

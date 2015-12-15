@@ -8,8 +8,8 @@ var loader = require('assemble-loader');
 var toc = require('./');
 var app;
 
-describe('toc', function () {
-  beforeEach(function () {
+describe('toc', function() {
+  beforeEach(function() {
     app = new Templates();
     app.use(loader());
     app.engine('md', require('engine-base'));
@@ -29,7 +29,7 @@ describe('toc', function () {
     app.partials.loadView('fixtures/doc.md');
   });
 
-  it('should work as an onLoad middleware:', function (done) {
+  it('should work as an onLoad middleware:', function(cb) {
     app.onLoad(/\.md$/, toc(app, {insert: true}));
     // with `.onLoad()`, we need to load the templates AFTER the
     // middleware is defined. other stages it doesn't matter
@@ -37,8 +37,8 @@ describe('toc', function () {
     app.partials.loadView('fixtures/doc.md');
 
     // render `./fixtures/basic.md`
-    app.render('basic.md', function (err, res) {
-      if (err) return done(err);
+    app.render('basic.md', function(err, res) {
+      if (err) return cb(err);
       res.content.should.equal([
         '# Basic markdown',
         '',
@@ -47,80 +47,6 @@ describe('toc', function () {
         '<!-- toc -->',
         '',
         '- [AAA](#aaa)',
-        '',
-        '<!-- tocstop -->',
-        '',
-        '## AAA',
-        '',
-        'This is aaa.',
-        '',
-        '### BBB',
-        'This is bbb.',
-        '',
-        '#### CCC',
-        'This is ccc.',
-        '',
-        '##### DDD',
-        'This is ddd.\n'
-      ].join('\n'));
-      done();
-    });
-  });
-
-  it('should work as a preRender middleware:', function (done) {
-    app.preRender(/\.md$/, toc(app, {insert: true}));
-    app.pages.loadView('fixtures/basic.md');
-    app.partials.loadView('fixtures/doc.md');
-
-    // render `./fixtures/basic.md`
-    app.render('basic.md', function (err, res) {
-      if (err) return done(err);
-
-      res.content.should.equal([
-        '# Basic markdown',
-        '',
-        '> This is a block quote',
-        '',
-        '<!-- toc -->',
-        '',
-        '- [AAA](#aaa)',
-        '',
-        '<!-- tocstop -->',
-        '',
-        '## AAA',
-        '',
-        'This is aaa.',
-        '',
-        '### BBB',
-        'This is bbb.',
-        '',
-        '#### CCC',
-        'This is ccc.',
-        '',
-        '##### DDD',
-        'This is ddd.\n'
-      ].join('\n'));
-      done();
-    });
-  });
-
-  it('should work as a postRender middleware:', function (done) {
-    app.postRender(/\.md$/, toc(app, {insert: true}));
-
-    // render `./fixtures/basic.md`
-    app.render('basic.md', function (err, res) {
-      if (err) return done(err);
-      res.content.should.equal([
-        '# Basic markdown',
-        '',
-        '> This is a block quote',
-        '',
-        '<!-- toc -->',
-        '',
-        '- [AAA](#aaa)',
-        '  * [BBB](#bbb)',
-        '    + [CCC](#ccc)',
-        '      ~ [DDD](#ddd)',
         '',
         '<!-- tocstop -->',
         '',
@@ -136,12 +62,87 @@ describe('toc', function () {
         '',
         '##### DDD',
         'This is ddd.',
+        '\n'
       ].join('\n'));
-      done();
+      cb();
     });
   });
 
-  it('should use options from app:', function (done) {
+  it('should work as a preRender middleware:', function(cb) {
+    app.preRender(/\.md$/, toc(app, {insert: true}));
+    app.pages.loadView('fixtures/basic.md');
+    app.partials.loadView('fixtures/doc.md');
+
+    // render `./fixtures/basic.md`
+    app.render('basic.md', function(err, res) {
+      if (err) return cb(err);
+
+      res.content.should.equal([
+        '# Basic markdown',
+        '',
+        '> This is a block quote',
+        '',
+        '<!-- toc -->',
+        '',
+        '- [AAA](#aaa)',
+        '',
+        '<!-- tocstop -->',
+        '',
+        '## AAA',
+        '',
+        'This is aaa.',
+        '',
+        '### BBB',
+        'This is bbb.',
+        '',
+        '#### CCC',
+        'This is ccc.',
+        '',
+        '##### DDD',
+        'This is ddd.\n\n'
+      ].join('\n'));
+      cb();
+    });
+  });
+
+  it('should work as a postRender middleware:', function(cb) {
+    app.postRender(/\.md$/, toc(app, {insert: true}));
+
+    // render `./fixtures/basic.md`
+    app.render('basic.md', function(err, res) {
+      if (err) return cb(err);
+      res.content.should.equal([
+        '# Basic markdown',
+        '',
+        '> This is a block quote',
+        '',
+        '<!-- toc -->',
+        '',
+        '- [AAA](#aaa)',
+        '  * [BBB](#bbb)',
+        '    + [CCC](#ccc)',
+        '      - [DDD](#ddd)',
+        '',
+        '<!-- tocstop -->',
+        '',
+        '## AAA',
+        '',
+        'This is aaa.',
+        '',
+        '### BBB',
+        'This is bbb.',
+        '',
+        '#### CCC',
+        'This is ccc.',
+        '',
+        '##### DDD',
+        'This is ddd.\n\n',
+      ].join('\n'));
+      cb();
+    });
+  });
+
+  it('should use options from app:', function(cb) {
     app.option({
       toc: {
         append: '\n\n_(Table of contents generated by [verb])_',
@@ -154,8 +155,8 @@ describe('toc', function () {
     app.postRender(/\.md$/, toc(app, {insert: true}));
 
     // render `./fixtures/basic.md`
-    app.render('basic.md', function (err, res) {
-      if (err) return done(err);
+    app.render('basic.md', function(err, res) {
+      if (err) return cb(err);
       res.content.should.equal([
         '# Basic markdown',
         '',
@@ -165,7 +166,7 @@ describe('toc', function () {
         '',
         '- [AAA](#aaa)',
         '    + [CCC](#ccc)',
-        '      ~ [DDD](#ddd)',
+        '      - [DDD](#ddd)',
         '',
         '_(Table of contents generated by [verb])_',
         '',
@@ -182,9 +183,9 @@ describe('toc', function () {
         'This is ccc.',
         '',
         '##### DDD',
-        'This is ddd.',
+        'This is ddd.\n\n',
       ].join('\n'));
-      done();
+      cb();
     });
   });
 });

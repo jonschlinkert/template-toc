@@ -13,14 +13,6 @@ var toc = require('markdown-toc');
 
 module.exports = function(app, options) {
   return function(view, next) {
-    // unescape escaped `<!!-- toc` comments
-    if (!/({%=|<!--) toc/.test(view.content)) {
-      view.content = unescape(view.content);
-      view.data.toc = '';
-      next();
-      return;
-    }
-
     var opts = extend({}, app.options, view.options);
     if (typeof opts.toc === 'undefined') {
       opts.toc = {};
